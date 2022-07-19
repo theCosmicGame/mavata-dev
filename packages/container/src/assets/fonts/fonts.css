@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./Playfair_Display/static/PlayfairDisplay-Regular') format('ttf');
+}
+
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./Barlow/Barlow-Regular.ttf') format('ttf');
+}

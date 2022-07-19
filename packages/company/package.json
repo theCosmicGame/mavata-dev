@@ -1,0 +1,50 @@
+{
+  "name": "companies",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "webpack serve --config config/webpack.dev.js",
+    "build": "webpack --config config/webpack.prod.js",
+    "postinstall": "node postinstall.js && echo 'hello'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theCosmicGame/mavata.git",
+    "directory": "packages/company"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.1",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^5.2.7",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^4.5.0",
+    "sass-loader": "^13.0.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
+    "webfontloader": "^1.6.28",
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.1.0",
+    "webpack-dev-server": "^4.9.1",
+    "webpack-merge": "^5.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^5.3.3"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.9.0",
+    "antd": "^4.21.6",
+    "mdb-react-ui-kit": "git+https://oauth2:SR42kF-Dy2FLLvz_4E3N@git.mdbootstrap.com/mdb/react/mdb5/prd/mdb5-react-ui-kit-pro-essential",
+    "dotenv": "^16.0.1",
+    "history": "^4.10.1",
+    "styled-components": "^5.3.5"
+  }
+}
