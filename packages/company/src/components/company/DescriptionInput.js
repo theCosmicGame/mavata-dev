@@ -18,11 +18,11 @@ const DescriptionTextArea = styled.textarea`
   white-space: break-spaces;
   line-height: 1.25;
 
-  &::-webkit-resizer {
+  /* &::-webkit-resizer {
     cursor: ns-resize;
     border-radius: 6px;
     background: #79b5d2;
-  }
+  } */
 
   &::-webkit-scrollbar {
     width: 10px;

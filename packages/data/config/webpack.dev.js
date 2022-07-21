@@ -20,14 +20,13 @@ const devConfig = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'companyMod',
+      name: 'dataMod',
       filename: 'remoteEntry.js',
       exposes: {
-        './CompanyApp': './src/bootstrap',
+        './DataApp': './src/bootstrap',
       },
       remotes: {
-        containerMfe: 'container@http://localhost:9000/remoteEntry.js',
-        dataMfe: 'dataMod@http://localhost:8084/remoteEntry.js'
+        containerMfe: 'container@http://localhost:9000/remoteEntry.js'
       },
       shared: {...packageJson.dependencies, ...packageJson.peerDependencies},
     }),

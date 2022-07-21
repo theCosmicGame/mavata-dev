@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import Intro from './Intro';
-import DataConnection from './DataConnection';
+import Data from './Data';
 import UsersTable from '../table/UsersTable';
 
 import NewProfile from '../modals/NewProfile';
@@ -17,12 +17,12 @@ const ContentSection = styled.div`
 `
 
 export default function Profile(props) {
-  const { company, onUpdateCompany, onUpdateDescription, isExpanded, mainWidth } = props;
+  const { company, Users, companyColumns, onUpdateCompany, onUpdateDescription, isExpanded, mainWidth } = props;
 
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showConnectionModal, setShowConnectionModal] = useState(false);
-  // console.log('show', showProfileModal, showConnectionModal)
-  console.log('in Profile.js', company)
+  const [hasConnection, setHasConnection] = useState(false);
+
   const updateProfileHandler = (enteredProfileData) => {
     onUpdateCompany(enteredProfileData)
     onUpdateDescription(enteredProfileData);
@@ -45,7 +45,8 @@ export default function Profile(props) {
   }
 
   const addConnectionHandler = (enteredConnectionData) => {
-
+    setHasConnection(true);
+    closeConnectionModal();
   }
 
   return (
@@ -74,8 +75,16 @@ export default function Profile(props) {
             isExpanded={isExpanded} 
             mainWidth={mainWidth} 
           />
-        <DataConnection company={company} openModal={openConnectionModal} />
-        <UsersTable company={company} />
+         <Data 
+          company={company} 
+          openModal={openConnectionModal} 
+          hasConnection={hasConnection}
+        />
+        <UsersTable 
+          company={company} 
+          Users={Users} 
+          companyColumns={companyColumns} 
+        />
       </ContentSection>
     </React.Fragment>
   )

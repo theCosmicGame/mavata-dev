@@ -42,8 +42,9 @@ export default ({ history }) => {
   const [firstRender, setFirstRender] = useState(true);
   const [firmData, setFirmData] = useState(Firm)
   const [companiesData, setCompaniesData] = useState(firmData.companies)
+  const [UsersData, setUsersData] = useState(firmData.users);
 
-  const ActiveUser = firmData.users.rows.filter(entry => entry.id === '1')[0] // Jennifer Doe
+  const ActiveUser = UsersData.rows.filter(entry => entry.id === '1')[0] // Jennifer Doe
 
   const updateFirmHandler = (enteredCompaniesData) => {
     setFirmData(prevState => ({
@@ -96,10 +97,18 @@ export default ({ history }) => {
       {(process.env.NODE_ENV === 'development' && whatPort === port.toString()) ? <NavbarDev /> : ''}
       <Switch>
         <Route exact path="/companies/last">
-          <Company companies={companiesData} onUpdateCompanies={(data) => updateCompaniesHandler(data)} />
+          <Company 
+            companies={companiesData} 
+            Users={UsersData} 
+            onUpdateCompanies={(data) => updateCompaniesHandler(data)} 
+          />
         </Route>
         <Route path='/companies/:companyName'>
-          <Company companies={companiesData} onUpdateCompanies={(data) => updateCompaniesHandler(data)} />
+          <Company 
+            companies={companiesData} 
+            Users={UsersData} 
+            onUpdateCompanies={(data) => updateCompaniesHandler(data)} 
+          />
         </Route>
         <Route exact path="/user/settings">
           {/* <Companies companies={firmData.companies} /> */}

@@ -64,11 +64,11 @@ function debounce(fn, ms) {
   };
 }
 
-const Company = ({ companies, onUpdateCompanies }) => {
+const Company = ({ companies, onUpdateCompanies, Users }) => {
   // BEM TO DO: get ID from company and pass as prop instead of company
   let { companyName } = useParams();
+  const  companyColumns = companies.columns;
   const useCompany = (companyName ? companies.rows.filter(entry => entry.condensedName === companyName)[0] : companies.rows.filter(entry => entry.last === true)[0])
-  // console.log('params', companyName, companies)
 
   const [company, setCompany] = useState(useCompany);
 
@@ -128,11 +128,7 @@ const Company = ({ companies, onUpdateCompanies }) => {
     };
   });
 
-  useEffect(() => {
-    if (company) {
-      console.log('company')
-    }
-  }, [company])
+  useEffect(() => {}, [company])
 
   const updateCompanyDescriptionHandler = (enteredCompanyData) => {
     setCompany(prevState => ({
@@ -187,6 +183,8 @@ const Company = ({ companies, onUpdateCompanies }) => {
         <Main>
           <Profile 
             company={company} 
+            Users={Users} 
+            companyColumns={companyColumns} 
             onUpdateCompany={updateCompanyHandler}
             onUpdateDescription={updateCompanyDescriptionHandler}
             isExpanded={isExpanded} 

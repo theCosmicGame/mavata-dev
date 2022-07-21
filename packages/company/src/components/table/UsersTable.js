@@ -22,6 +22,7 @@ const TableContainer = styled.div`
 
 const StyledTable = styled(MDBDatatable)`
   width: 80%;
+  padding: 20px 0;
 `
 
 const StyledLink = styled(Link)`
@@ -40,51 +41,68 @@ const StyledTrash = styled(StyledButton)`
   background-color: #d32f2f;
 `
 
-export default function UsersTable() {
+export default function UsersTable({ company, Users }) {
+
+  const [usersData, setUsersData] = useState(Users)
   const [colData, setColData] = useState(ucols)
-  const [rowData, setRowData] = useState(addCustomButtons(urows))
-  
+  const [rowData, setRowData] = useState(addCustomButtons(company))
+
   function addCustomButtons(rows) {
-    return rows.map((row, idx) => {
-      return {
-        ...row,
-        index: idx,
-        email: (
-          <StyledLink
-            to='#'
-            onClick={(e) => {
-              window.location.href = `mailto:${row.emailraw}`;
-              e.preventDefault();
-            }}
-          >
-            {row.emailraw}
-          </StyledLink>
-        ),
-        buttons: (
-          <>
-            <StyledButton
-              size='sm'
-              floating
-              className='message-btn'
-              onClick={() => console.log(`send a message to ${row.emailraw}`)}
+    console.log(rows.userIds, usersData.rows)
+    const users = [];
+
+    usersData.rows.map((row, idx) => {
+      console.log(row)
+
+      let index = 0;
+
+      if (rows.userIds.includes(row.id)) {
+        users.push({
+          ...row,
+          index: index,
+          email: (
+            <StyledLink
+              to='#'
+              onClick={(e) => {
+                window.location.href = `mailto:${row.emailraw}`;
+                e.preventDefault();
+              }}
             >
-              <MDBIcon icon='envelope' />
-            </StyledButton>
-            <StyledButton outline size='sm' floating className='call-btn' onClick={() => console.log(`edit user settings`)}>
-              <MDBIcon icon='ellipsis-h' />
-            </StyledButton>
-            <StyledTrash
-              size='sm'
-              floating
-              className='remove-user-btn'
-              onClick={() => removeRow(idx)}
-            >
-              <MDBIcon icon="trash" />
-            </StyledTrash>
-          </>
-        ),
-      };
+              {row.emailraw}
+            </StyledLink>
+          ),
+          buttons: (
+            <>
+              <StyledButton
+                size='sm'
+                floating
+                className='message-btn'
+                onClick={() => console.log(`send a message to ${row.emailraw}`)}
+              >
+                <MDBIcon icon='envelope' />
+              </StyledButton>
+              <StyledButton outline size='sm' floating className='call-btn' onClick={() => console.log(`edit user settings`)}>
+                <MDBIcon icon='ellipsis-h' />
+              </StyledButton>
+              <StyledTrash
+                size='sm'
+                floating
+                className='remove-user-btn'
+                onClick={() => removeRow(idx)}
+              >
+                <MDBIcon icon="trash" />
+              </StyledTrash>
+            </>
+          ),
+        });
+      }
+
+      index += 1;
     })
+
+    return users;
+
+    console.log(users, usersData.rows)
   }
 
   const deleteRow = (index) => {

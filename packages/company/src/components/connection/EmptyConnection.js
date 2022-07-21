@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Wrapper from '../Wrapper';
 import DataLayer from '../../assets/img/icons/data-layer.png';
 import SolidButton from '../buttons/SolidButton';
 
@@ -57,10 +56,9 @@ const ButtonDiv = styled.div`
   }
 `
 
-export default function DataConnection({ company, openModal }) {
+export default function EmptyConnection({ company, openModal }) {
 
   return (
-    <Wrapper>
       <ConnectionContainer>
         <ImgEmpty alt='Add Connection' />
         <EmptyConnectionText>Your data channels are currently empty. Add a connection to continue.</EmptyConnectionText>
@@ -68,6 +66,5 @@ export default function DataConnection({ company, openModal }) {
           <SolidButton type='add-connection' onClick={() => openModal()}><p>Add Data Connection</p></SolidButton>
         </ButtonDiv>
       </ConnectionContainer>
-    </Wrapper>
   )
 }

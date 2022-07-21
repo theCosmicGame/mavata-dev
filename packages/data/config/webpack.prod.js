@@ -9,18 +9,17 @@ const prodConfig = {
   mode: 'production',
   output: {
     filename: '[name].[contenthash].js',
-    publicPath: '/company/latest/',  // don't forget trailing '/'
+    publicPath: '/data/latest/',  // don't forget trailing '/'
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'companyMod',
+      name: 'dataMod',
       filename: 'remoteEntry.js',
       exposes: {
-        './CompanyApp': './src/bootstrap',
+        './DataApp': './src/bootstrap',
       },
       remotes: {
-        containerMfe: `container@${domain}/container/latest/remoteEntry.js`,
-        dataMfe: `dataMod@${domain}/data/latest/remoteEntry.js`
+        containerMfe: `container@${domain}/container/latest/remoteEntry.js`
       },
       shared: packageJson.dependencies,
     }),
