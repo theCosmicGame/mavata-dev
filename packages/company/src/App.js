@@ -6,6 +6,7 @@ import "./assets/css/mdb.css";
 import Companies from './components/Companies';
 import Company from './components/Company';
 import NavbarDev from './components/NavbarDev';
+import App from './components/test/08-finished/src/App'
 
 import { crows, ccols } from './variables/companies';
 import { urows, ucols } from './variables/users';
@@ -15,25 +16,9 @@ import WebFont from 'webfontloader';
 if (process.env.NODE_ENV === 'development') {
   WebFont.load({
     google: {
-      families: ['Barlow', 'Playfair Display', 'Overpass']
+      families: ['Barlow', 'Playfair Display', 'Overpass', 'Montserrat']
     }
   });
-}
-
-function CompaniesRouter() {
-  return (
-    <Switch>
-
-    </Switch>
-  )
-}
-
-function Boo() {
-  return (
-    <React.Fragment>
-      <h1>hey</h1>
-    </React.Fragment>
-  )
 }
 
 
@@ -53,27 +38,55 @@ const Firm = {
 
 export default ({ history }) => {
   let whatPort = location.port;
-  
+
   const [firstRender, setFirstRender] = useState(true);
   const [firmData, setFirmData] = useState(Firm)
+  const [companiesData, setCompaniesData] = useState(firmData.companies)
 
   const ActiveUser = firmData.users.rows.filter(entry => entry.id === '1')[0] // Jennifer Doe
-  const LastCompany = firmData.companies.rows.filter(entry => entry.last === true)[0]
-  console.log(LastCompany)
 
-  
-  function Test() {
-    
+  const updateFirmHandler = (enteredCompaniesData) => {
+    setFirmData(prevState => ({
+      ...prevState,
+      companies: {
+        ...prevState.companies,
+        rows: [...enteredCompaniesData]
+      },
+    }))
+  }
+
+  // takes in 'companies.row' array to update in the state
+  const updateCompaniesHandler = (updatedCompaniesData) => {
+    // update companies array
+    setCompaniesData(prevState => ({
+      ...prevState,
+      rows: [...updatedCompaniesData]
+    }))
+
+    // update firmData
+    updateFirmHandler(updatedCompaniesData)
+  }
+
+  const DevHome = (props) => {
+    return (
+      <Route path='/'>
+        <Test setFirstRender={props.setFirstRender} />
+      </Route>
+    )
+  }
+
+  function Test(props) {
+
     let el = (
       <React.Fragment>
         <h1>hellooooo</h1>
       </React.Fragment>
     )
 
-      if (process.env.NODE_ENV === 'development' && firstRender) {
-        el = <Redirect to='/companies/last' />
-        setFirstRender(false);
-      }
+    if (process.env.NODE_ENV === 'development' && firstRender && whatPort === port.toString()) {
+      el = <Redirect to='/companies/last' />
+      setFirstRender(false);
+    }
 
     return el
   }
@@ -83,20 +96,19 @@ export default ({ history }) => {
       {(process.env.NODE_ENV === 'development' && whatPort === port.toString()) ? <NavbarDev /> : ''}
       <Switch>
         <Route exact path="/companies/last">
-          <Company companies={firmData.companies} />
+          <Company companies={companiesData} onUpdateCompanies={(data) => updateCompaniesHandler(data)} />
         </Route>
         <Route path='/companies/:companyName'>
-          <Company companies={firmData.companies} /> 
+          <Company companies={companiesData} onUpdateCompanies={(data) => updateCompaniesHandler(data)} />
         </Route>
         <Route exact path="/user/settings">
-          <Companies companies={firmData.companies} />
+          {/* <Companies companies={firmData.companies} /> */}
+          <App />
         </Route>
         <Route exact path="/companies">
-          <Companies companies={firmData.companies} />
+          <Companies companies={companiesData} onUpdateCompanies={updateFirmHandler} />
         </Route>
-        <Route path='/'>
-          <Test setFirstRender={setFirstRender} />
-        </Route>
+        {(process.env.NODE_ENV === 'development' && whatPort === port.toString()) ? <DevHome setFirstRender={setFirstRender} /> : ''}
       </Switch>
     </Router>
   );

@@ -82,7 +82,7 @@ const StyledButton = styled(RouterLink)`
   }
 `
 
-export default function ButtonWorkflow(props) {
+export default function ButtonLink(props) {
   return (
     <StyledDiv>
       <StyledButton to={props.to} onClick={props.onClick} type={props.type}>

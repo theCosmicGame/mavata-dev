@@ -44,8 +44,8 @@ const Content = styled.div`
   font-family: Barlow;
 `
 
-export default function Companies({ companies }) {
-  
+export default function Companies({ companies, onUpdateCompanies }) {
+   
   return (
     <React.Fragment>
       <GlobalStyle />
@@ -53,7 +53,7 @@ export default function Companies({ companies }) {
         <Main>
           <Content>
             <CompaniesHeading companies={companies} />
-            <CompaniesTable companies={companies} />
+            <CompaniesTable companies={companies} onUpdateCompanies={onUpdateCompanies} />
           </Content>
         </Main>
       </Wrapper>

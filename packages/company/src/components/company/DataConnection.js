@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import Wrapper from '../Wrapper';
 
+import Wrapper from '../Wrapper';
 import DataLayer from '../../assets/img/icons/data-layer.png';
-import ButtonWorkflow from '../buttons/ButtonWorkflow';
+import SolidButton from '../buttons/SolidButton';
 
 const ImgEmpty = styled.img.attrs({ src: `${DataLayer}` })`
   margin: auto;
@@ -14,7 +14,6 @@ const ImgEmpty = styled.img.attrs({ src: `${DataLayer}` })`
   align: center;
 
   order: 2;
-
 `
 
 const EmptyConnectionText = styled.p`
@@ -47,20 +46,27 @@ const ConnectionContainer = styled.div`
   margin: auto;
 `
 
-const StyledButton = styled.div`
+const ButtonDiv = styled.div`
   order: 3;
   flex-grow: 0;
   padding: 20px 30px 30px;
+
+  & p {
+    margin: 0;
+    paddding: 0;
+  }
 `
 
-export default function DataConnection() {
+export default function DataConnection({ company, openModal }) {
 
   return (
     <Wrapper>
       <ConnectionContainer>
         <ImgEmpty alt='Add Connection' />
         <EmptyConnectionText>Your data channels are currently empty. Add a connection to continue.</EmptyConnectionText>
-        <StyledButton><ButtonWorkflow to='/addconnection'>Add Data Connection</ButtonWorkflow></StyledButton>
+        <ButtonDiv>
+          <SolidButton type='add-connection' onClick={() => openModal()}><p>Add Data Connection</p></SolidButton>
+        </ButtonDiv>
       </ConnectionContainer>
     </Wrapper>
   )

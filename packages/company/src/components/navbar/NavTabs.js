@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import inStr from '../../functions/inStr';
-import countOccurenceStr from '../../functions/countOccurenceStr';
+
+import { inStr, countOccurenceStr } from 'containerMfe/Functions';
 
 const NavDiv = styled.div`
   @media (max-width: 767px) {
@@ -33,7 +33,7 @@ const StyledNavLink = styled(NavLink)`
 export default function NavTabs({ linkMap }) {
   let { pathname } = useLocation();
 
-  console.log('wildcard', inStr('/companies/*', pathname), pathname, countOccurenceStr('/', pathname))
+  // console.log('wildcard', inStr('/companies/*', pathname), pathname, countOccurenceStr('/', pathname))
 
   return (
     <React.Fragment>

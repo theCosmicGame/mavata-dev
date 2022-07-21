@@ -25,6 +25,9 @@ const devConfig = {
       exposes: {
         './CompanyApp': './src/bootstrap',
       },
+      remotes: {
+        containerMfe: 'container@http://localhost:9000/remoteEntry.js'
+      },
       shared: {...packageJson.dependencies, ...packageJson.peerDependencies},
     }),
     new HtmlWebpackPlugin({

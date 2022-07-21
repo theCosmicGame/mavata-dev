@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import EditIcon from '../../assets/img/icons/edit.png'
@@ -16,7 +15,7 @@ const Button = styled.div`
   padding: 0;
 `
 
-const ButtonLink = styled(RouterLink)`
+const ButtonDiv = styled.div`
   min-height: 35px;
 
   flex: 0 0 auto;
@@ -83,13 +82,13 @@ const ButtonText = styled.span`
   }
 `
 
-export default function EditProfileButton() {
+export default function EditProfileButton({ onClick }) {
   return (
     <Button>
-      <ButtonLink to='/user/editprofile'>
+      <ButtonDiv onClick={onClick} >
         <StyledEditIcon alt='add' />
         <ButtonText>Edit Profile</ButtonText>
-      </ButtonLink>
+      </ButtonDiv>
     </Button>
   )
 }

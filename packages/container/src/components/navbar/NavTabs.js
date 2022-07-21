@@ -2,6 +2,8 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { countOccurenceStr } from '../../functions/Functions';
+
 const NavDiv = styled.div`
   @media (max-width: 767px) {
     display: none;
@@ -29,13 +31,36 @@ const StyledNavLink = styled(NavLink)`
 `
 
 export default function NavTabs({ linkMap }) {
+  let { pathname } = useLocation();
+
   return (
     <React.Fragment>
       <NavDiv>
         {linkMap.map(([title, url], index) => (
-          <StyledNavLink end to={url} key={index} className={({ isActive }) => (isActive ? 'active' : '')}>
-                {title}
-            </StyledNavLink>
+          <StyledNavLink
+            to={url}
+            key={index}
+            activeClassName='active'
+            isActive={(match, locn) => {
+              const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf('/')); // remove last part of path ( admin/customer/list becomes admin/customer for example )
+              const pathLastPart = pathname.slice(pathname.lastIndexOf('/'))
+              const count = countOccurenceStr('/', pathname);
+              if (count === 1 && locn.pathname === pathname && locn.pathname === url) {   // if current parent is matched and doesn't contain childs activate it
+                return true;
+              } else if (count > 1 && pathWithoutLastPart === url) {
+                return false;
+              } else if (locn.pathname === pathname && locn.pathname === url) {
+                return true;
+              } else if (pathWithoutLastPart === '/companies' && count === 2 && url === '/companies/last') {
+                console.log('param url', pathWithoutLastPart, pathLastPart, locn.pathname)
+                return true
+              } else {
+                return false;
+              }
+            }}
+          >
+            {title}
+          </StyledNavLink>
         ))}
       </NavDiv>
     </React.Fragment>

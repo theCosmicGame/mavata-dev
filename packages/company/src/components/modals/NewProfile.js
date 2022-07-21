@@ -1,33 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import EditProfileForm from './EditProfileForm';
+import Modal from './Modal';
 
-const StyledDiv = styled.div`
-  background-color: #a892ee;
-  padding: 1rem;
-  margin: 2rem auto;
-  width: 50rem;
-  max-width: 95%;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25)
-`
-
-export default function NewProfile(props) {
-  const { company } = props;
-
-  const onSaveProfile = (enteredProfileData) => {
-    const data = {
-      ...enteredProfileData
-    };
-
-    props.onUpdateProfile(data)
-  }
-
+export default function NewProfile({ company, onUpdateProfile, closeModal }) {
   return (
-    <StyledDiv>
-      <EditProfileForm company={company} onSaveProfile={onSaveProfile} />
-    </StyledDiv>
+    <React.Fragment>
+      {/* add backdrop confirmation when data was editted */}
+      <Modal closeModal={closeModal} >
+        <h1>Edit Company Profile</h1>
+        <EditProfileForm
+          company={company}
+          onSaveProfile={(data) => onUpdateProfile(data)}
+          closeModal={closeModal}
+        />
+      </Modal>
+    </React.Fragment>
   )
 }

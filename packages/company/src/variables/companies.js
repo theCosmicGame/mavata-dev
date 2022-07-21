@@ -1,4 +1,4 @@
-import strToUrl from '../functions/strToUrl';
+import { strToUrl } from 'containerMfe/Functions';
 import Banner1 from '../assets/img/banners/1129.jpg';
 import Banner2 from '../assets/img/banners/geometric_color_hexagon_banner.jpg';
 import Banner3 from '../assets/img/banners/gradient-dark-blue-futuristic-digital-grid-background.jpg';

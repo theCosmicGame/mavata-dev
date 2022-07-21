@@ -7,8 +7,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/theCosmicGame/mavata.git",
-    "directory": "packages/marketingg"
+    "url": "https://github.com/theCosmicGame/mavata-dev.git",
+    "directory": "packages/marketing"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

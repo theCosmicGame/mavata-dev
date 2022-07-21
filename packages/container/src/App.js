@@ -7,7 +7,7 @@ import WebFont from 'webfontloader';
 
 WebFont.load({
   google: {
-    families: ['Barlow', 'Playfair Display', 'Overpass']
+    families: ['Barlow', 'Playfair Display', 'Overpass', 'Montserrat']
   }
 });
 
@@ -21,26 +21,29 @@ const CompaniesLazy = lazy(() => import('./components/CompanyApp'));
 const history = createBrowserHistory();
 
 const GlobalStyle = createGlobalStyle`
-body {
-  height: 100%;
-  min-height: 100vh;
-}
+  body {
+    height: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
 
-html {
-  height: 100%;
-}
+  html {
+    height: 100%;
+  }
 `
 
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   useEffect(() => {
     if (isSignedIn) {
+      console.log('once?')
       history.push('/companies/last')
     }
   }, [isSignedIn]);
 
   return (
-    <Router location={history.location} history={history}>
+    <Router history={history}>
       <div>
       <GlobalStyle />
       <Header onSignOut={() => setIsSignedIn(false)} isSignedIn={isSignedIn} />

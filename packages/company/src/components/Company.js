@@ -11,14 +11,12 @@ import { useParams } from 'react-router-dom';
 
 import { Col, Row } from 'antd';
 import styled from 'styled-components';
-import getWindowWidth from '../functions/getWindowWidth';
+import { getWindowWidth, strToUrl } from 'containerMfe/Functions';
 
 import '../assets/css/antd.css';
 
 import Sidebar from './sidebar/Sidebar';
-import Intro from './company/Intro';
-import DataConnection from './company/DataConnection';
-import UsersTable from './table/UsersTable';
+import Profile from './company/Profile';
 
 
 const Wrapper = styled.div`
@@ -55,14 +53,6 @@ const Main = styled.main`
   position: relative;
 `
 
-const ContentSection = styled.div`
-  display: block;
-  top: 0;
-  left: 0;
-  color: #000;
-  font-family: Barlow;
-`
-
 function debounce(fn, ms) {
   let timer
   return _ => {
@@ -74,10 +64,13 @@ function debounce(fn, ms) {
   };
 }
 
-const Company = ({ companies }) => {
+const Company = ({ companies, onUpdateCompanies }) => {
   // BEM TO DO: get ID from company and pass as prop instead of company
   let { companyName } = useParams();
+  const useCompany = (companyName ? companies.rows.filter(entry => entry.condensedName === companyName)[0] : companies.rows.filter(entry => entry.last === true)[0])
   // console.log('params', companyName, companies)
+
+  const [company, setCompany] = useState(useCompany);
 
   // sidebar collapse
   localStorage.setItem('sidebar-collapsed', (window.innerWidth > 850) ? false : true);
@@ -135,21 +128,70 @@ const Company = ({ companies }) => {
     };
   });
 
+  useEffect(() => {
+    if (company) {
+      console.log('company')
+    }
+  }, [company])
+
+  const updateCompanyDescriptionHandler = (enteredCompanyData) => {
+    setCompany(prevState => ({
+      ...prevState,
+      description: enteredCompanyData.enteredDescription,
+    }))
+  };
+
+  const updateCompanyHandler = (enteredCompanyData) => {
+    
+    setCompany(prevState => ({
+      ...prevState,
+      name: enteredCompanyData.enteredName.trim(),
+      condensedName: strToUrl(enteredCompanyData.enteredName.trim()),
+      description: enteredCompanyData.enteredDescription,
+      sector: enteredCompanyData.enteredSector.trim(),
+      location: enteredCompanyData.enteredLocation.trim(),
+      website: enteredCompanyData.enteredWebsite.trim()
+    }))
+    
+    console.log('in Company.js', company, enteredCompanyData)
+    const newCompaniesList = [...companies.rows.filter(entry => entry.id !== company.id), {
+      ...company,
+      name: enteredCompanyData.enteredName.trim(),
+      condensedName: strToUrl(enteredCompanyData.enteredName.trim()),
+      description: enteredCompanyData.enteredDescription,
+      sector: enteredCompanyData.enteredSector.trim(),
+      location: enteredCompanyData.enteredLocation.trim(),
+      website: enteredCompanyData.enteredWebsite.trim()
+    }];
+
+    const { compare } = Intl.Collator('en-US');
+    newCompaniesList.sort((a,b) => compare(a.id, b.id))
+
+    onUpdateCompanies(newCompaniesList)
+  }
+
   // console.log('sidebar width', sidebarWidth)
-  const useCompany = (companyName ? companies.rows.filter(entry => entry.condensedName === companyName)[0] : companies.rows.filter(entry => entry.last === true)[0])
 
   return (
     <Wrapper>
       <Col flex={sidebarWidth}>
-        <Sidebar company={useCompany} isExpanded={isExpanded} setIsExpanded={setIsExpanded} mainWidth={mainWidth} setWidthSidebar={setWidthSidebar} />
+        <Sidebar 
+          company={company} 
+          isExpanded={isExpanded} 
+          setIsExpanded={setIsExpanded} 
+          mainWidth={mainWidth} 
+          setWidthSidebar={setWidthSidebar} 
+        />
       </Col>
       <StyledSection sidebarWidth={sidebarWidth} >
         <Main>
-          <ContentSection>
-            <Intro company={useCompany} isExpanded={isExpanded} mainWidth={mainWidth} />
-            <DataConnection company={useCompany} />
-            <UsersTable company={useCompany} />
-          </ContentSection>
+          <Profile 
+            company={company} 
+            onUpdateCompany={updateCompanyHandler}
+            onUpdateDescription={updateCompanyDescriptionHandler}
+            isExpanded={isExpanded} 
+            mainWidth={mainWidth} 
+          />
         </Main>
       </StyledSection>
     </Wrapper>

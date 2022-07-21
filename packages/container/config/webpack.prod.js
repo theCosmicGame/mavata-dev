@@ -14,11 +14,15 @@ const prodConfig = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'container',
+      filename: 'remoteEntry.js',
       remotes: {
         // each key, e.g. "marketing" must match up to import statement in bootstrap.js file within sub-project folder 
         marketingMfe: `marketingMod@${domain}/marketing/latest/remoteEntry.js`,
         authMfe: `authMod@${domain}/auth/latest/remoteEntry.js`,
         companyMfe: `companyMod@${domain}/company/latest/remoteEntry.js`,
+      },
+      exposes: {
+        './Functions': './src/functions/Functions'
       },
       shared: packageJson.dependencies,
     }),

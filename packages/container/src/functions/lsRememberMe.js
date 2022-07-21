@@ -1,12 +1,15 @@
 const rmCheck = document.getElementById("rememberMe"),
     emailInput = document.getElementById("email");
 
-if (localStorage.checkbox && localStorage.checkbox !== "") {
-  rmCheck.setAttribute("checked", "checked");
-  emailInput.value = localStorage.username;
-} else {
-  rmCheck.removeAttribute("checked");
-  emailInput.value = "";
+if (rmCheck && emailInput) {
+  if (localStorage.checkbox && localStorage.checkbox !== "") {
+    rmCheck.setAttribute("checked", "checked");
+    emailInput.value = localStorage.username;
+  } else {
+    rmCheck.removeAttribute("checked");
+    emailInput.value = "";
+  }
+
 }
 
 function lsRememberMe() {
@@ -18,3 +21,5 @@ function lsRememberMe() {
     localStorage.checkbox = "";
   }
 }
+
+export default lsRememberMe;

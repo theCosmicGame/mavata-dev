@@ -1,5 +1,5 @@
 {
-  "name": "containerr",
+  "name": "container",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,8 +9,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/theCosmicGame/mavata.git",
-    "directory": "packages/containerr"
+    "url": "https://github.com/theCosmicGame/mavata-dev.git",
+    "directory": "packages/container"
   },
   "keywords": [],
   "author": "",

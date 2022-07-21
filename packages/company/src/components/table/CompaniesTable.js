@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MDBDatatable, MDBBtn, MDBIcon } from 'mdbReactUiKit';
 import styled from 'styled-components';
-import strToUrl from '../../functions/strToUrl';
-import { crows, ccols } from '../../variables/companies';
+
+import { strToUrl } from 'containerMfe/Functions';
 
 const Frame = styled.div`
   min-height: 100vh;
@@ -36,11 +36,39 @@ const StyledTable = styled(MDBDatatable)`
   }
 `
 
-
-export default function CompaniesTable({ companies }) {
+export default function CompaniesTable({ companies, onUpdateCompanies }) {
   const [actionData, setActionData] = useState({
     columns: companies.columns,
-    rows: companies.rows.map((row) => {
+    rows: addActionButtons(companies.rows)
+    // rows: companies.rows.map((row) => {
+    //   return {
+    //     ...row,
+    //     action: (
+    //       <Link to={`/companies/${strToUrl(row.name)}`} >
+    //         <StyledButton outline size='sm' floating className='arrow-btn' onClick={() => setLastCompany(row.name)}>
+    //           <MDBIcon icon='arrow-right' />
+    //         </StyledButton>
+    //       </Link>
+    //     ),
+    //   }
+    // })
+  });
+
+  const setLastCompany = (newCompanyName) => {
+    const prevCompany = companies.rows.filter(entry => entry.last === true)[0]
+
+    if (prevCompany.name !== newCompanyName) {
+      prevCompany.last = false;
+      const newCompany = companies.rows.filter(entry => entry.condensedName === strToUrl(newCompanyName))[0]
+
+      newCompany.last = true;
+      // console.log('previous company', prevCompany.name, prevCompany.last, newCompanyName, newCompany)
+    }
+
+  }
+  
+  function addActionButtons(rows) {
+    return rows.map((row) => {
       return {
         ...row,
         action: (
@@ -52,22 +80,7 @@ export default function CompaniesTable({ companies }) {
         ),
       }
     })
-  });
-
-  const setLastCompany = (newCompanyName) => {
-    const prevCompany = companies.rows.filter(entry => entry.last === true)[0]
-    console.log(prevCompany)
-
-    if (prevCompany.name !== newCompanyName) {
-      prevCompany.last = false;
-      const newCompany = companies.rows.filter(entry => entry.condensedName === strToUrl(newCompanyName))[0]
-
-      newCompany.last = true;
-      console.log('previous company', prevCompany.name, prevCompany.last, newCompanyName, newCompany)
-    }
-
   }
-  
 
   return (
     <StyledContainer>
