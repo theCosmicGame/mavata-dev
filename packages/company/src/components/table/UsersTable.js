@@ -37,29 +37,32 @@ const StyledButton = styled(MDBBtn)`
   margin: 3px!important;
 `
 
-const StyledTrash = styled(StyledButton)`
+const StyledDiv = styled.div`
+  display: inline-block;
+`
+
+const StyledTrash = styled(MDBBtn)`
+  padding: 3px!important;
+  margin: 3px!important;
   background-color: #d32f2f;
 `
 
 export default function UsersTable({ company, Users }) {
+  const [initialUsersData, setInitialUsersData] = useState(addCustomButtons(Users.rows))
+  const [usersData, setUsersData] = useState(initialUsersData)
+  const [colData, setColData] = useState(Users.columns)
 
-  const [usersData, setUsersData] = useState(Users)
-  const [colData, setColData] = useState(ucols)
-  const [rowData, setRowData] = useState(addCustomButtons(company))
+  console.log('usersData', usersData)
 
-  function addCustomButtons(rows) {
-    console.log(rows.userIds, usersData.rows)
-    const users = [];
+  function addCustomButtons(users) {
+    const usersArr = [];
+    let idx = 0;
 
-    usersData.rows.map((row, idx) => {
-      console.log(row)
-
-      let index = 0;
-
-      if (rows.userIds.includes(row.id)) {
-        users.push({
+    users.map((row) => {
+      if (company.userIds.includes(row.id)) {
+        usersArr.push({
           ...row,
-          index: index,
+          index: idx,
           email: (
             <StyledLink
               to='#'
@@ -85,88 +88,108 @@ export default function UsersTable({ company, Users }) {
                 <MDBIcon icon='ellipsis-h' />
               </StyledButton>
               <StyledTrash
+                id={`remove-btn-${idx}`}
+                bemkey={`remove-btn-${idx}`}
                 size='sm'
                 floating
                 className='remove-user-btn'
-                onClick={() => removeRow(idx)}
+                onClick={(event) => deleteRow(event)}
+              // onClick={(event) => printEvent(event)}
               >
                 <MDBIcon icon="trash" />
               </StyledTrash>
             </>
           ),
         });
+
+        idx = ++idx;
       }
 
-      index += 1;
+      // console.log('usersArr', usersArr)
+
     })
 
-    return users;
-
-    console.log(users, usersData.rows)
+    return usersArr;
   }
 
-  const deleteRow = (index) => {
-    if (rowData.length > 0) {
-      var updatedRows = [...rowData]
+  const removeRow = (index) => {
+    const oldRows = [...usersData]
+    console.log('index', index, 'old rows', oldRows)
+    console.log(index)
+
+    const updatedRows = oldRows.filter((row) => row.index === index);
+    console.log('updated', updatedRows)
+
+    setUsersData([...updatedRows])
+
+    setTimeout(() => {
+      console.log('timer', usersData)
+    }, 3000)
+  }
+
+  const updateTableRows = (newRows) => {}
+
+  const deleteRow = (event) => {
+    let parentId = ''
+    
+    if (usersData.length > 0) {
+      let updatedRows = [...usersData]
       console.log('1st rowData', updatedRows)
 
-      var indexToRemove = updatedRows.findIndex(x => x.index === index)
-      console.log('remove', indexToRemove, index)
+      console.log('node name', event.target.nodeName)
+      if (event.target.nodeName !== 'BUTTON') {
+        // console.log('parent node', event.target.parentNode.attributes.id)
+        parentId = event.target.parentNode.attributes.id.value
+      } else {
+        // console.log('button node', event.target.attributes.id)
+        parentId = event.target.attributes.id.value
+      }
+      
+      if (parentId !== '') {
+        parentId = String(parentId).replace('remove-btn-', '')
+      }
+
+      let indexToRemove = updatedRows.findIndex(x => parseInt(parentId) === x.index)
+      // console.log('remove (found, dictated)', indexToRemove, parentId)
 
       if (indexToRemove > -1) {
         updatedRows.splice(indexToRemove, 1)
         var newRows = addCustomButtons(updatedRows)
 
-        console.log(newRows)
+        console.log('new rows', newRows)
+        newRows = addCustomButtons(newRows);
+        setUsersData(newRows)
 
-        setRowData(newRows)
-        // setTableData((prevState) => {
-        //   return {
-        //     ...prevState,
-        //     rows: newRows
-        //   }
-        // })
       }
     }
   }
 
-  const removeRow = (index) => {
-    console.log('rowData', rowData)
-    const oldRows = [...rowData]
-    const updatedRows = oldRows.filter((row) => row.index !== index);
-    console.log('updated', updatedRows)
-
-    setRowData([...updatedRows])
-
-    setTimeout(() => {
-      console.log('timer', rowData)
-    }, 3000)
-  }
-
-
-  const Table = ({ colData, rowData }) => {
+  function Table({ users }) {
     let tableData = {
       columns: colData,
-      rows: rowData
+      rows: users
     }
+
+    console.log('tableData', tableData)
 
     useEffect(() => {
       tableData = {
         columns: colData,
-        rows: rowData
+        rows: users
       }
-    }, [rowData])
-
-  
+    }, [usersData])
+    
+    console.log('tableData post useEffect', tableData)
+    
     return (
       <StyledTable
         hover
         striped
-  
+
         data={tableData}
         entriesOptions={[5, 10, 20]}
         entries={10}
-  
+
         fixedHeader
         maxHeight='460px'
       />
@@ -176,7 +199,7 @@ export default function UsersTable({ company, Users }) {
   return (
     <Wrapper>
       <TableContainer>
-        <Table colData={colData} rowData={rowData} />
+        <Table users={usersData} />
       </TableContainer>
     </Wrapper>
   );
