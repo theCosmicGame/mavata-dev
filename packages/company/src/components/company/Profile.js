@@ -7,6 +7,7 @@ import UsersTable from '../table/UsersTable';
 
 import NewProfile from '../modals/NewProfile';
 import NewConnection from '../modals/NewConnection';
+import UserPermissions from '../modals/UserPermissions';
 
 const ContentSection = styled.div`
   display: block;
@@ -17,11 +18,51 @@ const ContentSection = styled.div`
 `
 
 export default function Profile(props) {
-  const { company, Users, companyColumns, onUpdateCompany, onUpdateDescription, isExpanded, mainWidth } = props;
+  const { company, activeUser, onUdpdateUsers, 
+          onUpdateCompany, onUpdateDescription, isExpanded, 
+          mainWidth } = props;
 
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showConnectionModal, setShowConnectionModal] = useState(false);
+  const [showOtherUserModal, setShowOtherUserModal] = useState(false);
+  const [editUser, setEditUser] = useState({});
+
   const [hasConnection, setHasConnection] = useState(false);
+
+  // BEM TO DO: determine what view to render
+
+  // Admin can remove users and edit their permissions
+  // Collaborator can edit company details and add a connection but cannot change (/see ?) other users 
+  // Viewer can only view select company details (Intro, maybe data channels, maybe other users (not External))
+  let userRole = {}
+
+  if (activeUser.roles.admin.includes(company.id)) {
+    userRole = {
+      role: 'Admin',
+      data: true,
+      users: 'edit'
+    }
+  } else if (activeUser.roles.collaborator.includes(company.id)) {
+    userRole = {
+      role: 'Collaborator',
+      data: true,
+      users: 'view'
+    }
+  // BEM TO DO: check if external?
+  } else if (activeUser.roles.viewer.includes(company.id) && company.firmId === activeUser.firmId) {
+    userRole = {
+      role: 'Viewer',
+      data: false,  // BEM TO DO
+      users: 'view' // BEM TO DO
+    }
+  } else {
+    userRole = {
+      role: 'Viewer', // admin, collaborator, viewer
+      data: false,  // false, true
+      users: false // false, view, edit
+    }
+  }
+  // console.log(activeUser, company.id, userRole)
 
   const updateProfileHandler = (enteredProfileData) => {
     onUpdateCompany(enteredProfileData)
@@ -34,6 +75,43 @@ export default function Profile(props) {
 
   const closeProfileModal = () => {
     setShowProfileModal(false);
+  }
+
+  const openUserModal = (user) => {
+    setEditUser(user)
+    setShowOtherUserModal(true);
+  }
+
+  const closeUserModal = () => {
+    setShowOtherUserModal(false);
+  }
+
+  const editPermissionsHandler = (enteredUserPermissions) => {
+    // update editUser
+    // update Users
+    // update company.users.rows
+    setEditUser(prevState => ({
+      ...prevState,
+      role: enteredUserPermissions.role,
+      empty: enteredUserPermissions.empty
+    }))
+
+    let newUsers = company.users.rows.map((user, idx) => {
+      if (user.id === editUser.id) {
+        return {
+          ...user,
+          role: enteredUserPermissions.role,
+          permissions: enteredUserPermissions.permissions,
+          empty: enteredUserPermissions.empty
+        }
+      } else {
+        return user
+      }
+    })
+
+    onUdpdateUsers(newUsers)
+    // console.log('in Profile.js', editUser, newUsers)
+
   }
 
   const openConnectionModal = () => {
@@ -67,7 +145,17 @@ export default function Profile(props) {
           closeModal={closeConnectionModal} 
         /> : 
       ''}
+      {showOtherUserModal ? 
+        <UserPermissions 
+          company={company} 
+          editUser={editUser}
+          onEditPermissions={editPermissionsHandler} 
+          showModal={showOtherUserModal} 
+          closeModal={closeUserModal} 
+        /> : 
+      ''}
       <ContentSection>
+       {/* every viewer */}
         <Intro 
             company={company} 
             openModal={openProfileModal} 
@@ -75,15 +163,19 @@ export default function Profile(props) {
             isExpanded={isExpanded} 
             mainWidth={mainWidth} 
           />
+        { /* select viewers */}
          <Data 
           company={company} 
+          userRole={userRole}
           openModal={openConnectionModal} 
           hasConnection={hasConnection}
         />
+        { /* admin only */}
         <UsersTable 
           company={company} 
-          Users={Users} 
-          companyColumns={companyColumns} 
+          editUser={editUser} 
+          openModal={openUserModal}
+          onEditUser={editPermissionsHandler}
         />
       </ContentSection>
     </React.Fragment>

@@ -56,8 +56,9 @@ const Description = styled.div`
 `
 
 const Details = styled.div`
-  min-width: 25%;   /* tied to width of 'Description' styled div */
+  max-width: 30%;   /* tied to width of 'Description' styled div */
   width: auto;
+  padding-right: 20px;
 
   display: ${props => (props.mainWidth <= 850) ? 'none' : 'flex'};
   flex-direction: column;

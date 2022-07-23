@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 
 import EditProfileForm from './EditProfileForm';
 import Modal from './Modal';

@@ -11,8 +11,6 @@ import { MDBDatatable, MDBBtn, MDBIcon } from 'mdbReactUiKit';
 import Wrapper from '../Wrapper';
 import styled from 'styled-components';
 
-import { urows, ucols } from '../../variables/users';
-
 const TableContainer = styled.div`
   display: flex;
   align-items: center;
@@ -47,12 +45,14 @@ const StyledTrash = styled(MDBBtn)`
   background-color: #d32f2f;
 `
 
-export default function UsersTable({ company, Users }) {
-  const [initialUsersData, setInitialUsersData] = useState(addCustomButtons(Users.rows))
-  const [usersData, setUsersData] = useState(initialUsersData)
-  const [colData, setColData] = useState(Users.columns)
+export default function UsersTable({ company, editUser,  onEditUser, openModal }) {
+  const [usersData, setUsersData] = useState(addCustomButtons(company.users.rows))
+  const [colData, setColData] = useState(company.users.columns)
+  const [user, setUser] = useState({});
 
-  console.log('usersData', usersData)
+  // console.log('company', company)
+  // console.log('Users', Users)
+  // console.log('usersData', usersData)
 
   function addCustomButtons(users) {
     const usersArr = [];
@@ -84,7 +84,14 @@ export default function UsersTable({ company, Users }) {
               >
                 <MDBIcon icon='envelope' />
               </StyledButton>
-              <StyledButton outline size='sm' floating className='call-btn' onClick={() => console.log(`edit user settings`)}>
+              <StyledButton 
+                id={`edit-btn-${idx}`}
+                outline 
+                size='sm' 
+                floating 
+                className='call-btn' 
+                onClick={(event) => editUserHandler(event)}
+              >
                 <MDBIcon icon='ellipsis-h' />
               </StyledButton>
               <StyledTrash
@@ -127,28 +134,44 @@ export default function UsersTable({ company, Users }) {
     }, 3000)
   }
 
-  const updateTableRows = (newRows) => {}
+  const editUserHandler = (event) => {
+    const index = parseInt(buttonEventHandler(event))
+    const oldUser = usersData.filter(entry => entry.index === index)[0]
 
-  const deleteRow = (event) => {
+    // console.log('selected user', index, oldUser)
+
+    openModal(oldUser);
+    // setUser
+    // setUsersData
+  }
+
+
+  function buttonEventHandler(event) {
     let parentId = ''
+
+    // console.log('node name', event.target.nodeName)
+    if (event.target.nodeName !== 'BUTTON') {
+      // console.log('parent node', event.target.parentNode.attributes.id)
+      parentId = event.target.parentNode.attributes.id.value
+    } else {
+      // console.log('button node', event.target.attributes.id)
+      parentId = event.target.attributes.id.value
+    }
     
+    if (parentId !== '') {
+      parentId = parentId.substring(parentId.search('-btn-')).replace('-btn-', '')
+      // console.log('parentId', parentId)
+    }
+
+    return parentId
+  }
+  
+  const deleteRow = (event) => {
     if (usersData.length > 0) {
       let updatedRows = [...usersData]
       console.log('1st rowData', updatedRows)
 
-      console.log('node name', event.target.nodeName)
-      if (event.target.nodeName !== 'BUTTON') {
-        // console.log('parent node', event.target.parentNode.attributes.id)
-        parentId = event.target.parentNode.attributes.id.value
-      } else {
-        // console.log('button node', event.target.attributes.id)
-        parentId = event.target.attributes.id.value
-      }
-      
-      if (parentId !== '') {
-        parentId = String(parentId).replace('remove-btn-', '')
-      }
-
+      const parentId = buttonEventHandler(event)
       let indexToRemove = updatedRows.findIndex(x => parseInt(parentId) === x.index)
       // console.log('remove (found, dictated)', indexToRemove, parentId)
 
@@ -170,7 +193,7 @@ export default function UsersTable({ company, Users }) {
       rows: users
     }
 
-    console.log('tableData', tableData)
+    // console.log('tableData', tableData)
 
     useEffect(() => {
       tableData = {
@@ -179,7 +202,7 @@ export default function UsersTable({ company, Users }) {
       }
     }, [usersData])
     
-    console.log('tableData post useEffect', tableData)
+    // console.log('tableData post useEffect', tableData)
     
     return (
       <StyledTable

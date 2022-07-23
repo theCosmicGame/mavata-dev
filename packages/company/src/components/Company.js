@@ -64,23 +64,22 @@ function debounce(fn, ms) {
   };
 }
 
-const Company = ({ companies, onUpdateCompanies, Users }) => {
-  // BEM TO DO: get ID from company and pass as prop instead of company
-  let { companyName } = useParams();
-  const  companyColumns = companies.columns;
-  const useCompany = (companyName ? companies.rows.filter(entry => entry.condensedName === companyName)[0] : companies.rows.filter(entry => entry.last === true)[0])
+const Company = (props) => {
+  const { companies, onUpdateCompanies, activeUser, onUpdateUsers } = props;
 
+  // BEM TO DO: get ID from company and pass as prop instead of company --> ????
+  let { companyName } = useParams();
+  const useCompany = (companyName ? companies.rows.filter(entry => entry.condensedName === companyName)[0] : companies.rows.filter(entry => entry.last === true)[0])
   const [company, setCompany] = useState(useCompany);
+  // BEM TO DO: set user state and determine which view to render (edits to permissions happen after user session or on refresh of page??) (admin, collaborator, viewer)
+  // console.log('in Company.js', company, company.users.rows)
 
   // sidebar collapse
   localStorage.setItem('sidebar-collapsed', (window.innerWidth > 850) ? false : true);
   const sidebarCollapsed = localStorage.getItem('sidebar-collapsed');
   const [isExpanded, setIsExpanded] = useState(sidebarCollapsed ? false : true);
-
   const [sidebarWidth, setSidebarWidth] = useState(isExpanded ? '250px' : '50px')
   const [mainWidth, setMainWidth] = useState(window.innerWidth - parseInt(sidebarWidth))
-
-  // console.log('2 main width ', mainWidth, window.innerWidth, sidebarWidth)
 
   function setWidthSidebar() {
     let w = getWindowWidth();
@@ -128,7 +127,26 @@ const Company = ({ companies, onUpdateCompanies, Users }) => {
     };
   });
 
-  useEffect(() => {}, [company])
+  useEffect(() => {
+    onUpdateCompanies(company)
+  }, [company])
+
+  const updateUsersPermissionsHandler = (newUsers) => {
+    onUpdateUsers(newUsers);
+
+    setCompany(prevState => ({
+      ...prevState,
+      users: {
+        ...prevState.users,
+        rows: newUsers
+      }
+    }))
+  };
+
+  // BEM TO DO
+  const removeUserHandler = (user) => {
+
+  }
 
   const updateCompanyDescriptionHandler = (enteredCompanyData) => {
     setCompany(prevState => ({
@@ -149,7 +167,7 @@ const Company = ({ companies, onUpdateCompanies, Users }) => {
       website: enteredCompanyData.enteredWebsite.trim()
     }))
     
-    console.log('in Company.js', company, enteredCompanyData)
+    // console.log('in Company.js', company, enteredCompanyData)
     const newCompaniesList = [...companies.rows.filter(entry => entry.id !== company.id), {
       ...company,
       name: enteredCompanyData.enteredName.trim(),
@@ -183,8 +201,8 @@ const Company = ({ companies, onUpdateCompanies, Users }) => {
         <Main>
           <Profile 
             company={company} 
-            Users={Users} 
-            companyColumns={companyColumns} 
+            onUdpdateUsers={updateUsersPermissionsHandler}
+            activeUser={activeUser} 
             onUpdateCompany={updateCompanyHandler}
             onUpdateDescription={updateCompanyDescriptionHandler}
             isExpanded={isExpanded} 
