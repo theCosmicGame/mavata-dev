@@ -45,12 +45,26 @@ const StyledTrash = styled(MDBBtn)`
   background-color: #d32f2f;
 `
 
-export default function UsersTable({ company, editUser,  onEditUser, openModal }) {
-  const [usersData, setUsersData] = useState(addCustomButtons(company.users.rows))
-  const [colData, setColData] = useState(company.users.columns)
-  const [user, setUser] = useState({});
+export default function UsersTable({ company, editUser, openModal }) {
+  const [usersData, setUsersData] = useState(addCustomButtons(company.users.rows));
+  const [colData, setColData] = useState(company.users.columns);
+  const [tableData, setTableData] = useState({
+    columns: company.users.columns,
+    rows: usersData
+  })
 
-  // console.log('company', company)
+  console.log('UsersTable.js usersData', usersData)
+
+  useEffect(() => {
+    console.log('UsersTable useEffect')
+    setTableData(prevState => ({
+      ...prevState,
+      rows: addCustomButtons(company.users.rows)
+    }))
+  }, [company])
+
+  console.log('UsersTable.js company', company)
+  console.log('tableData', tableData)
   // console.log('Users', Users)
   // console.log('usersData', usersData)
 
@@ -84,12 +98,12 @@ export default function UsersTable({ company, editUser,  onEditUser, openModal }
               >
                 <MDBIcon icon='envelope' />
               </StyledButton>
-              <StyledButton 
+              <StyledButton
                 id={`edit-btn-${idx}`}
-                outline 
-                size='sm' 
-                floating 
-                className='call-btn' 
+                outline
+                size='sm'
+                floating
+                className='call-btn'
                 onClick={(event) => editUserHandler(event)}
               >
                 <MDBIcon icon='ellipsis-h' />
@@ -141,10 +155,7 @@ export default function UsersTable({ company, editUser,  onEditUser, openModal }
     // console.log('selected user', index, oldUser)
 
     openModal(oldUser);
-    // setUser
-    // setUsersData
   }
-
 
   function buttonEventHandler(event) {
     let parentId = ''
@@ -157,7 +168,7 @@ export default function UsersTable({ company, editUser,  onEditUser, openModal }
       // console.log('button node', event.target.attributes.id)
       parentId = event.target.attributes.id.value
     }
-    
+
     if (parentId !== '') {
       parentId = parentId.substring(parentId.search('-btn-')).replace('-btn-', '')
       // console.log('parentId', parentId)
@@ -165,7 +176,7 @@ export default function UsersTable({ company, editUser,  onEditUser, openModal }
 
     return parentId
   }
-  
+
   const deleteRow = (event) => {
     if (usersData.length > 0) {
       let updatedRows = [...usersData]
@@ -190,7 +201,7 @@ export default function UsersTable({ company, editUser,  onEditUser, openModal }
   function Table({ users }) {
     let tableData = {
       columns: colData,
-      rows: users
+      rows: usersData
     }
 
     // console.log('tableData', tableData)
@@ -198,12 +209,12 @@ export default function UsersTable({ company, editUser,  onEditUser, openModal }
     useEffect(() => {
       tableData = {
         columns: colData,
-        rows: users
+        rows: usersData
       }
     }, [usersData])
-    
+
     // console.log('tableData post useEffect', tableData)
-    
+
     return (
       <StyledTable
         hover
@@ -219,10 +230,22 @@ export default function UsersTable({ company, editUser,  onEditUser, openModal }
     )
   }
 
+
+
   return (
     <Wrapper>
       <TableContainer>
-        <Table users={usersData} />
+        <StyledTable
+          hover
+          striped
+
+          data={tableData}
+          entriesOptions={[5, 10, 20]}
+          entries={10}
+
+          fixedHeader
+          maxHeight='460px'
+        />
       </TableContainer>
     </Wrapper>
   );

@@ -195,6 +195,7 @@ export default function EditUserPermissionsForm({ company, user, onEditPermissio
     }
     // BEM TO DO: confirmation modal and validation logic
     let enteredPermissions = {
+      id: user.id,
       name: userName,
       role: dropdown,
       permissions: p,

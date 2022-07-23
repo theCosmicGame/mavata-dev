@@ -42,9 +42,8 @@ export default ({ history }) => {
   const [companiesData, setCompaniesData] = useState(firmData.companies)
   const [company, setCompany] = useState(companiesData.rows.filter(entry => entry.id === 1)[0])
 
-  // console.log('company', company)
+  console.log('App.js company', company)
   // console.log('companiesData', companiesData)
-  // console.log('usersData', UsersData)
 
   const ActiveUser = company.users.rows.filter(entry => entry.id === 1)[0] // Jennifer Doe .. BEM TO DO: set at Auth per user session
 
@@ -52,9 +51,7 @@ export default ({ history }) => {
     history.push('/companies/last')
   }, [])
 
-  useEffect(() => {
 
-  }, [company])
 
   function NewDevHome() {
     return (

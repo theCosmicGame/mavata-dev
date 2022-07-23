@@ -175,7 +175,6 @@ export default function Profile(props) {
           company={company} 
           editUser={editUser} 
           openModal={openUserModal}
-          onEditUser={editPermissionsHandler}
         />
       </ContentSection>
     </React.Fragment>
