@@ -18,7 +18,7 @@ const ContentSection = styled.div`
 `
 
 export default function Profile(props) {
-  const { company, activeUser, onUdpdateUsers, 
+  const { company, activeUser, onUdpdateUsers, onRemoveUser, 
           onUpdateCompany, onUpdateDescription, isExpanded, 
           mainWidth } = props;
 
@@ -34,36 +34,40 @@ export default function Profile(props) {
   // Admin can remove users and edit their permissions
   // Collaborator can edit company details and add a connection but cannot change (/see ?) other users 
   // Viewer can only view select company details (Intro, maybe data channels, maybe other users (not External))
-  let userRole = {}
+  // let userRole = {}
 
-  if (activeUser.roles.admin.includes(company.id)) {
-    userRole = {
-      role: 'Admin',
-      data: true,
-      users: 'edit'
-    }
-  } else if (activeUser.roles.collaborator.includes(company.id)) {
-    userRole = {
-      role: 'Collaborator',
-      data: true,
-      users: 'view'
-    }
-  // BEM TO DO: check if external?
-  } else if (activeUser.roles.viewer.includes(company.id) && company.firmId === activeUser.firmId) {
-    userRole = {
-      role: 'Viewer',
-      data: false,  // BEM TO DO
-      users: 'view' // BEM TO DO
-    }
-  } else {
-    userRole = {
-      role: 'Viewer', // admin, collaborator, viewer
-      data: false,  // false, true
-      users: false // false, view, edit
-    }
-  }
+  // if (activeUser.roles.admin.includes(company.id)) {
+  //   userRole = {
+  //     role: 'Admin',
+  //     data: true,
+  //     users: 'edit'
+  //   }
+  // } else if (activeUser.roles.collaborator.includes(company.id)) {
+  //   userRole = {
+  //     role: 'Collaborator',
+  //     data: true,
+  //     users: 'view'
+  //   }
+  // // BEM TO DO: check if external?
+  // } else if (activeUser.roles.viewer.includes(company.id) && company.firmId === activeUser.firmId) {
+  //   userRole = {
+  //     role: 'Viewer',
+  //     data: false,  // BEM TO DO
+  //     users: 'view' // BEM TO DO
+  //   }
+  // } else {
+  //   userRole = {
+  //     role: 'Viewer', // admin, collaborator, viewer
+  //     data: false,  // false, true
+  //     users: false // false, view, edit
+  //   }
+  // }
   // console.log(activeUser, company.id, userRole)
 
+  const removeUserHandler = (newUsers) => {
+    console.log('in Profile.js', newUsers)
+    onRemoveUser(newUsers)
+  }
   const updateProfileHandler = (enteredProfileData) => {
     onUpdateCompany(enteredProfileData)
     onUpdateDescription(enteredProfileData);
@@ -83,6 +87,7 @@ export default function Profile(props) {
   }
 
   const closeUserModal = () => {
+    setEditUser({})
     setShowOtherUserModal(false);
   }
 
@@ -148,7 +153,7 @@ export default function Profile(props) {
       {showOtherUserModal ? 
         <UserPermissions 
           company={company} 
-          editUser={editUser}
+          editUser={editUser} 
           onEditPermissions={editPermissionsHandler} 
           showModal={showOtherUserModal} 
           closeModal={closeUserModal} 
@@ -166,13 +171,13 @@ export default function Profile(props) {
         { /* select viewers */}
          <Data 
           company={company} 
-          userRole={userRole}
           openModal={openConnectionModal} 
           hasConnection={hasConnection}
         />
         { /* admin only */}
         <UsersTable 
           company={company} 
+          onRemoveUser={removeUserHandler}
           editUser={editUser} 
           openModal={openUserModal}
         />

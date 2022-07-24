@@ -61,6 +61,11 @@ export default ({ history }) => {
     )
   }
 
+  const removeUserHandler = (newUsers) => {
+    updateCompanyForUsers(newUsers)
+    updateFirmHandler([], newUsers)
+  }
+
   const updateFirmHandler = (enteredCompaniesData, newUsersData) => {
     if (newUsersData === []) {
       setFirmData(prevState => ({
@@ -173,6 +178,8 @@ export default ({ history }) => {
         <Route exact path="/companies/last">
           <Company 
             companies={companiesData} 
+            passCompany={setCompany} 
+            onRemoveUser={removeUserHandler} 
             activeUser={ActiveUser} 
             onUpdateCompanies={(data) => updateCompanyHandler(data)} 
             onUpdateUsers={(data) => updateUsersHandler(data)} 
@@ -181,6 +188,8 @@ export default ({ history }) => {
         <Route path='/companies/:companyName'>
           <Company 
             companies={companiesData} 
+            passCompany={setCompany} 
+            onRemoveUser={removeUserHandler} 
             activeUser={ActiveUser} 
             onUpdateCompanies={(data) => updateCompanyHandler(data)} 
             onUpdateUsers={(data) => updateUsersHandler(data)} 

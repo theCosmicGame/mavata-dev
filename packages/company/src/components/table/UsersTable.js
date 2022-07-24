@@ -45,7 +45,7 @@ const StyledTrash = styled(MDBBtn)`
   background-color: #d32f2f;
 `
 
-export default function UsersTable({ company, editUser, openModal }) {
+export default function UsersTable({ company, editUser, onRemoveUser, openModal }) {
   const [usersData, setUsersData] = useState(addCustomButtons(company.users.rows));
   const [colData, setColData] = useState(company.users.columns);
   const [tableData, setTableData] = useState({
@@ -53,18 +53,18 @@ export default function UsersTable({ company, editUser, openModal }) {
     rows: usersData
   })
 
-  console.log('UsersTable.js usersData', usersData)
-
+  
   useEffect(() => {
-    console.log('UsersTable useEffect')
+    console.log('UsersTable.js company users', company.users.rows)
+
     setTableData(prevState => ({
       ...prevState,
       rows: addCustomButtons(company.users.rows)
     }))
   }, [company])
 
-  console.log('UsersTable.js company', company)
-  console.log('tableData', tableData)
+  // console.log('UsersTable.js company', company)
+  // console.log('tableData', tableData)
   // console.log('Users', Users)
   // console.log('usersData', usersData)
 
@@ -183,16 +183,26 @@ export default function UsersTable({ company, editUser, openModal }) {
       console.log('1st rowData', updatedRows)
 
       const parentId = buttonEventHandler(event)
-      let indexToRemove = updatedRows.findIndex(x => parseInt(parentId) === x.index)
+      const indexToRemove = updatedRows.findIndex(x => parseInt(parentId) === x.index)
       // console.log('remove (found, dictated)', indexToRemove, parentId)
 
       if (indexToRemove > -1) {
-        updatedRows.splice(indexToRemove, 1)
+        if (indexToRemove === 0) {
+          updatedRows = updatedRows.slice(indexToRemove + 1)
+        } else {
+          updatedRows = [...updatedRows.slice(0, indexToRemove), ...updatedRows.slice(indexToRemove + 1)]
+        }
         var newRows = addCustomButtons(updatedRows)
 
         console.log('new rows', newRows)
         newRows = addCustomButtons(newRows);
         setUsersData(newRows)
+        setTableData(prevState => ({
+          ...prevState,
+          rows: newRows
+        }))
+
+        onRemoveUser(newRows)
 
       }
     }
@@ -229,8 +239,6 @@ export default function UsersTable({ company, editUser, openModal }) {
       />
     )
   }
-
-
 
   return (
     <Wrapper>

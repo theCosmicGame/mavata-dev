@@ -65,7 +65,7 @@ function debounce(fn, ms) {
 }
 
 const Company = (props) => {
-  const { companies, onUpdateCompanies, activeUser, onUpdateUsers } = props;
+  const { companies, passCompany, onRemoveUser, onUpdateCompanies, activeUser, onUpdateUsers } = props;
 
   // BEM TO DO: get ID from company and pass as prop instead of company --> ????
   let { companyName } = useParams();
@@ -129,6 +129,7 @@ const Company = (props) => {
 
   useEffect(() => {
     onUpdateCompanies(company)
+    console.log('in Company.js useEffect', company.users.rows)
   }, [company])
 
   const updateUsersPermissionsHandler = (newUsers) => {
@@ -143,9 +144,18 @@ const Company = (props) => {
     }))
   };
 
-  // BEM TO DO
-  const removeUserHandler = (user) => {
+  const removeUserHandler = (newUsers) => {
+    console.log('in Company.js', newUsers)
+    
+    setCompany(prevState => ({
+      ...prevState,
+      users: {
+        ...prevState.users,
+        rows: newUsers
+      }
+    }))
 
+    // removeUserHandler(newUsers)
   }
 
   const updateCompanyDescriptionHandler = (enteredCompanyData) => {
@@ -202,6 +212,7 @@ const Company = (props) => {
           <Profile 
             company={company} 
             onUdpdateUsers={updateUsersPermissionsHandler}
+            onRemoveUser={removeUserHandler}
             activeUser={activeUser} 
             onUpdateCompany={updateCompanyHandler}
             onUpdateDescription={updateCompanyDescriptionHandler}
