@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Intro from './Intro';
 import Data from './Data';
-import UsersTable from '../table/UsersTable';
+import UsersTable from './UsersTable';
 
 import NewProfile from '../modals/NewProfile';
 import NewConnection from '../modals/NewConnection';
@@ -172,14 +172,14 @@ export default function Profile(props) {
          <Data 
           company={company} 
           openModal={openConnectionModal} 
-          hasConnection={hasConnection}
+          hasConnection={hasConnection} 
         />
         { /* admin only */}
         <UsersTable 
           company={company} 
-          onRemoveUser={removeUserHandler}
+          onRemoveUser={removeUserHandler} 
           editUser={editUser} 
-          openModal={openUserModal}
+          openModal={openUserModal} 
         />
       </ContentSection>
     </React.Fragment>

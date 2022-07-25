@@ -25,10 +25,11 @@ const StyledButton = styled(MDBBtn)`
 `
 
 const StyledTable = styled(MDBDatatable)`
-  width: 80%;
   align: center;
+  width: fit-content;
 
-  max-width: 1000px;
+  min-width: 800px;
+  max-width: 1200px;
 
   & td {
     margin-bottom: 0!important;
@@ -36,35 +37,27 @@ const StyledTable = styled(MDBDatatable)`
   }
 `
 
-export default function CompaniesTable({ companies, onUpdateCompanies }) {
+export default function CompaniesTable({ companies, activeUser, onNavigateCompany, onUpdateCompanies }) {
+  console.log('in CompaniesTable.js', companies, activeUser)
+  const userCompanies = companies.rows.filter(company => activeUser.companies.includes(company.id))
   const [actionData, setActionData] = useState({
     columns: companies.columns,
     rows: addActionButtons(companies.rows)
-    // rows: companies.rows.map((row) => {
-    //   return {
-    //     ...row,
-    //     action: (
-    //       <Link to={`/companies/${strToUrl(row.name)}`} >
-    //         <StyledButton outline size='sm' floating className='arrow-btn' onClick={() => setLastCompany(row.name)}>
-    //           <MDBIcon icon='arrow-right' />
-    //         </StyledButton>
-    //       </Link>
-    //     ),
-    //   }
-    // })
   });
 
   const setLastCompany = (newCompanyName) => {
     const prevCompany = companies.rows.filter(entry => entry.last === true)[0]
+    let newCompany = prevCompany
 
     if (prevCompany.name !== newCompanyName) {
       prevCompany.last = false;
-      const newCompany = companies.rows.filter(entry => entry.condensedName === strToUrl(newCompanyName))[0]
+      newCompany = companies.rows.filter(entry => entry.condensedName === strToUrl(newCompanyName))[0]
 
       newCompany.last = true;
       // console.log('previous company', prevCompany.name, prevCompany.last, newCompanyName, newCompany)
     }
 
+    onNavigateCompany(prevCompany, newCompany)
   }
   
   function addActionButtons(rows) {
@@ -87,13 +80,12 @@ export default function CompaniesTable({ companies, onUpdateCompanies }) {
       <StyledTable
           hover
           striped
+          fixedHeader
+          maxHeight='460px'
 
           data={actionData}
           entriesOptions={[5, 10, 20]}
           entries={10}
-
-          fixedHeader
-          maxHeight='460px'
         />
     </StyledContainer>
   )

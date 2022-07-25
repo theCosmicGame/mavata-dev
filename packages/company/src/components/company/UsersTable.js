@@ -13,14 +13,30 @@ import styled from 'styled-components';
 
 const TableContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: auto;
+
+  & div {
+    width: fit-content;
+  }
 `
 
 const StyledTable = styled(MDBDatatable)`
   width: 80%;
-  padding: 20px 0;
+  padding: 10px 0 20px 0;
+`
+
+const TableHeading = styled.h1`
+  margin: 0;
+  padding: 10px 0 0 0;
+  flex-basis: 100%;
+
+  font-family: Barlow, sans-serif;
+  font-weight: bold;
+  font-size: 1.5em;
+  text-align: left;
 `
 
 const StyledLink = styled(Link)`
@@ -46,6 +62,7 @@ const StyledTrash = styled(MDBBtn)`
 `
 
 export default function UsersTable({ company, editUser, onRemoveUser, openModal }) {
+  // console.log('in UsersTable.js', company)
   const [usersData, setUsersData] = useState(addCustomButtons(company.users.rows));
   const [colData, setColData] = useState(company.users.columns);
   const [tableData, setTableData] = useState({
@@ -53,9 +70,9 @@ export default function UsersTable({ company, editUser, onRemoveUser, openModal 
     rows: usersData
   })
 
-  
+
   useEffect(() => {
-    console.log('UsersTable.js company users', company.users.rows)
+    console.log('UsersTable.js company users', company.users)
 
     setTableData(prevState => ({
       ...prevState,
@@ -71,6 +88,8 @@ export default function UsersTable({ company, editUser, onRemoveUser, openModal 
   function addCustomButtons(users) {
     const usersArr = [];
     let idx = 0;
+
+    // console.log('in AddCustomButtons', company.userIds, users)
 
     users.map((row) => {
       if (company.userIds.includes(row.id)) {
@@ -243,17 +262,20 @@ export default function UsersTable({ company, editUser, onRemoveUser, openModal 
   return (
     <Wrapper>
       <TableContainer>
-        <StyledTable
-          hover
-          striped
+        <div>
+          <TableHeading>Company Users</TableHeading>
+          <StyledTable
+            hover
+            striped
+            fixedHeader
+            maxHeight='460px'
 
-          data={tableData}
-          entriesOptions={[5, 10, 20]}
-          entries={10}
+            data={tableData}
+            entriesOptions={[5, 10, 20]}
+            entries={10}
 
-          fixedHeader
-          maxHeight='460px'
-        />
+          />
+        </div>
       </TableContainer>
     </Wrapper>
   );

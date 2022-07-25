@@ -43,9 +43,9 @@ export const urows = [
     firms: [1],
     isExternalFirm: false,
     isExternalComp: true, // BEM TO DO: automate within companies.js 
-    adminRoles: [1, 3, 4, 5, 6, 7, 8, 9, 10],
-    collaboratorRoles: [],
-    viewerRoles: [],
+    adminRoles: [1, 4, 5, 6, 7, 8, 9, 10],
+    collaboratorRoles: [2],
+    viewerRoles: [3],
     firmAdmin: false,
   },
   {
@@ -69,9 +69,9 @@ export const urows = [
     firms: [1],
     isExternalFirm: false,
     isExternalComp: true,
-    adminRoles: [],
+    adminRoles: [3],
     collaboratorRoles: [],
-    viewerRoles: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    viewerRoles: [1, 2, 4, 5, 6, 7, 8, 9, 10],
     firmAdmin: false,
   },
   {
@@ -187,7 +187,7 @@ export const urows = [
 // console.log('in users.js', urows)
 
 export const ucols = [
-  { label: 'Name', field: 'name' },
+  { label: 'Name', field: 'name'},
   { label: 'Email', field: 'email' },
   { label: 'Role', field: 'role' },
   { label: 'Actions', field: 'buttons', sort: false },

@@ -169,7 +169,7 @@ export const crows = [
   // add property isExternalCompany per company
   const adminUser = users.filter(user => user.roles.admin.includes(company.id))[0]
 
-  let u = users.map((user, i) => {
+  let u = users.filter(user => user.companies.includes(company.id)).map((user, i) => {
     if (user.companies.includes(company.id)) {
       let r = 'User';
       if (user.roles.admin.includes(company.id)) {
@@ -200,5 +200,7 @@ export const ccols = [
   { label: 'Name', field: 'name' },
   { label: 'Sector', field: 'sector' },
   { label: 'Role', field: 'role' },
-  { label: '', field: 'action', sort: false, width: 10 },
+  { label: '', field: 'action', sort: false },
 ]
+
+// console.log('in companies.js', crows)

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import ButtonWorkflow from '../buttons/ButtonLink';
-import { crows as table } from '../../variables/companies';
 
 const Frame = styled.div`
   padding: 0px;

@@ -65,14 +65,16 @@ function debounce(fn, ms) {
 }
 
 const Company = (props) => {
-  const { companies, passCompany, onRemoveUser, onUpdateCompanies, activeUser, onUpdateUsers } = props;
-
+  const { companies, onNavigateCompany, onUpdateCompanies, activeUser, onUpdateUsers } = props;
   // BEM TO DO: get ID from company and pass as prop instead of company --> ????
   let { companyName } = useParams();
   const useCompany = (companyName ? companies.rows.filter(entry => entry.condensedName === companyName)[0] : companies.rows.filter(entry => entry.last === true)[0])
   const [company, setCompany] = useState(useCompany);
+  
+  console.log('in Company.js', activeUser, company)
   // BEM TO DO: set user state and determine which view to render (edits to permissions happen after user session or on refresh of page??) (admin, collaborator, viewer)
   // console.log('in Company.js', company, company.users.rows)
+  // const [view, setView] = activeUser.
 
   // sidebar collapse
   localStorage.setItem('sidebar-collapsed', (window.innerWidth > 850) ? false : true);
@@ -154,8 +156,6 @@ const Company = (props) => {
         rows: newUsers
       }
     }))
-
-    // removeUserHandler(newUsers)
   }
 
   const updateCompanyDescriptionHandler = (enteredCompanyData) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, Router, Redirect } from 'react-router-dom';
+import { Switch, Route, Router } from 'react-router-dom';
 import { port } from './variables/global';
 import "./assets/css/mdb.css";
 
@@ -20,38 +20,17 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-
-// const Firm = {
-//   id: '1',
-//   name: 'Rock Equity',
-//   domain: '@rockequity.com',
-//   companies: {
-//     columns: ccols,
-//     rows: crows,
-//   },
-//   users: {
-//     columns: ucols,
-//     rows: urows,
-//   },
-// }
-
 export default ({ history }) => {
   let whatPort = location.port;
 
   const [firmData, setFirmData] = useState(firms[0])  // Rock Equity (BEM TO DO)
   const [companiesData, setCompaniesData] = useState(firmData.companies)
-  const [company, setCompany] = useState(companiesData.rows.filter(entry => entry.id === 1)[0])
-
-  console.log('App.js company', company)
-  // console.log('companiesData', companiesData)
-
+  const [company, setCompany] = useState(companiesData.rows.filter(entry => entry.last === true)[0])
   const ActiveUser = company.users.rows.filter(entry => entry.id === 1)[0] // Jennifer Doe .. BEM TO DO: set at Auth per user session
 
   useEffect(() => {
     history.push('/companies/last')
   }, [])
-
-
 
   function NewDevHome() {
     return (
@@ -61,11 +40,30 @@ export default ({ history }) => {
     )
   }
 
-  const removeUserHandler = (newUsers) => {
-    updateCompanyForUsers(newUsers)
-    updateFirmHandler([], newUsers)
+  const onNavigateCompany = (oldCompany, newCompany) => {
+    // update last company on navigate
+    if (oldCompany.id !== newCompany.id) {
+      let newCompanies = companiesData.rows.map(c => {
+        if (c.id !== oldCompany.id && c.id !== newCompany.id) {
+          return c
+        } else if (c.id === oldCompany.id) {
+          return oldCompany
+        } else {
+          return newCompany
+        }
+      })
+
+      // update companiesData to persist the change
+      setCompaniesData(prevState => ({
+        ...prevState,
+        rows: newCompanies
+      }))
+    } 
+    
+    setCompany(newCompany)
   }
 
+  // BEM TO DO: causing Cognitive Complexity to be too high
   const updateFirmHandler = (enteredCompaniesData, newUsersData) => {
     if (newUsersData === []) {
       setFirmData(prevState => ({
@@ -118,7 +116,7 @@ export default ({ history }) => {
       rows: newCompanies
     }))
 
-    // console.log('in App.js updateCompanyHandler', companiesData, newCompanies, updatedCompanyData)
+    console.log('in App.js updateCompanyHandler', companiesData, newCompanies, updatedCompanyData)
   }
 
   const updateCompanyForUsers = (updatedUsersData) => {
@@ -151,18 +149,6 @@ export default ({ history }) => {
     console.log('in App.js', companiesData, updatedUsersData)
   }
 
-  // takes in 'companies.row' array to update in the state
-  const updateCompaniesHandler = (updatedCompaniesData) => {
-    // update companies array
-    setCompaniesData(prevState => ({
-      ...prevState,
-      rows: [...updatedCompaniesData]
-    }))
-
-    // update firmData
-    updateFirmHandler(updatedCompaniesData, [])
-  }
-
   const updateUsersHandler = (updatedUsersData) => {
     // setUsersData(updatedUsersData)
     // BEM TO DO: update Companies per Company per user change
@@ -178,8 +164,7 @@ export default ({ history }) => {
         <Route exact path="/companies/last">
           <Company 
             companies={companiesData} 
-            passCompany={setCompany} 
-            onRemoveUser={removeUserHandler} 
+            onNavigateCompany={onNavigateCompany} 
             activeUser={ActiveUser} 
             onUpdateCompanies={(data) => updateCompanyHandler(data)} 
             onUpdateUsers={(data) => updateUsersHandler(data)} 
@@ -188,8 +173,7 @@ export default ({ history }) => {
         <Route path='/companies/:companyName'>
           <Company 
             companies={companiesData} 
-            passCompany={setCompany} 
-            onRemoveUser={removeUserHandler} 
+            onNavigateCompany={onNavigateCompany} 
             activeUser={ActiveUser} 
             onUpdateCompanies={(data) => updateCompanyHandler(data)} 
             onUpdateUsers={(data) => updateUsersHandler(data)} 
@@ -202,6 +186,7 @@ export default ({ history }) => {
         <Route exact path="/companies">
           <Companies 
             companies={companiesData} 
+            onNavigateCompany={onNavigateCompany} 
             activeUser={ActiveUser} 
             onUpdateCompanies={updateFirmHandler} // BEM TO DO: fix one or the other
             onUpdateUsers={(data) => updateUsersHandler(data)} 

@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
 import CompaniesHeading from './companies/CompaniesHeading';
-import CompaniesTable from './table/CompaniesTable';
+import CompaniesTable from './companies/CompaniesTable';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -44,16 +44,37 @@ const Content = styled.div`
   font-family: Barlow;
 `
 
-export default function Companies({ companies, onUpdateCompanies }) {
-   
+export default function Companies({ companies, activeUser, onNavigateCompany, onUpdateCompanies }) {
+  // BEM TO DO: create state on add/remove company
+  const userCompanies = {
+    columns: companies.columns,
+    rows: companies.rows.filter(company => activeUser.companies.includes(company.id)).map(company => {
+      let r = 'User';
+      if (activeUser.roles.admin.includes(company.id)) {
+        r = 'Admin';
+      } else if (activeUser.roles.collaborator.includes(company.id)) {
+        r = 'Collaborator'
+      } else if (activeUser.roles.viewer.includes(company.id) && activeUser.emailraw.slice(activeUser.emailraw.search('@')) !== company.firmDomain) {
+        // console.log(user.emailraw.slice(user.emailraw.search('@')), )       
+        r = 'External User'
+      }
+      return {...company, role: r}
+    })
+  }
+  
   return (
     <React.Fragment>
       <GlobalStyle />
       <Wrapper>
         <Main>
           <Content>
-            <CompaniesHeading companies={companies} />
-            <CompaniesTable companies={companies} onUpdateCompanies={onUpdateCompanies} />
+            <CompaniesHeading companies={userCompanies} />
+            <CompaniesTable 
+              companies={userCompanies} 
+              activeUser={activeUser} 
+              onUpdateCompanies={onUpdateCompanies} 
+              onNavigateCompany={onNavigateCompany} 
+            />
           </Content>
         </Main>
       </Wrapper>
